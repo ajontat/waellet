@@ -159,8 +159,7 @@ export default {
                             if(pass.hasOwnProperty('accountPassword') && pass.accountPassword != "") {
                                 originalSeed = originalSeed.replace(/,/g, ' ');
                                 let privateKey = mnemonicToSeed(originalSeed);
-                                let wallet = generateHdWallet(privateKey);
-                                const keyPair = await addressGenerator.generateKeyPair(pass.accountPassword,privateKey.toString('hex'), wallet);
+                                const keyPair = await addressGenerator.generateKeyPair(pass.accountPassword,privateKey.toString('hex'));
                                 if(keyPair) {
                                     browser.storage.sync.set({isLogged: true}).then(async () => {
                                         browser.storage.sync.set({userAccount: keyPair}).then(() => {

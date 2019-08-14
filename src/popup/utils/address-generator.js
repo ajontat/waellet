@@ -1,9 +1,6 @@
 /* eslint-disable */
 import { dump } from './keystore'
 import * as Crypto from '@aeternity/aepp-sdk/es/utils/crypto'
-import { getHdWalletAccount } from './hdWallet';
-
-const nacl = require('tweetnacl')
 
 export const addressGenerator = {
   generateKeyPair,
@@ -15,27 +12,24 @@ export function printUnderscored (key, val) {
 }
 
 
-async function generateKeyPair (passphrase, privateKey, wallet) {
-  const hexStr = await Crypto.hexStringToByte(privateKey.trim())
-  const keys = await Crypto.generateKeyPairFromSecret(hexStr)
-  const keystore = await dump('keystore', passphrase, keys.secretKey);
-  let account = getHdWalletAccount(wallet);
-  keystore.public_key = account.address;
+async function generateKeyPair (passphrase, privateKey) {
+  const seedHexStr = await Crypto.hexStringToByte(privateKey.trim())
+  const keypair = Crypto.generateKeyPairFromSecret(seedHexStr)
+  const keystore = await dump('keystore', passphrase, Buffer.from(privateKey, 'hex'));
+  keystore.public_key = "ak_"+Crypto.encodeBase58Check(keypair.publicKey)
   return {
     publicKey: keystore.public_key,
     encryptedPrivateKey: JSON.stringify(keystore)
-  };//secretKey: privateKey.trim(), 
+  };
 }
 
-async function importPrivateKey (passphrase, secretKey, wallet) {
-  const hexStr = await Crypto.hexStringToByte(secretKey.trim())
-  const keys = await Crypto.generateKeyPairFromSecret(hexStr)
-
-  const keystore = await dump('keystore', passphrase, keys.secretKey);
-  let account = getHdWalletAccount(wallet);
-  keystore.public_key = account.address;
+async function importPrivateKey (passphrase, privateKey) {
+  const seedHexStr = await Crypto.hexStringToByte(privateKey.trim())
+  const keypair = Crypto.generateKeyPairFromSecret(seedHexStr)
+  const keystore = await dump('keystore', passphrase, seedHexStr);
+  keystore.public_key = "ak_"+Crypto.encodeBase58Check(keypair.publicKey)
   return {
     publicKey: keystore.public_key,
     encryptedPrivateKey: JSON.stringify(keystore),
-  };//secretKey: secretKey.trim(), // NOT SECURE
+  };
 }
