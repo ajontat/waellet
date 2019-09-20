@@ -5,7 +5,9 @@
   "author": "Milen Radkov <milenradkov@me.com>",
   "license": "MIT",
   "private": true,
+  "main": "electron.js",
   "scripts": {
+    "electron": "vue-cli-service build; electron .",
     "lint": "eslint --ext .js,.vue src",
     "prettier": "prettier \"src/**/*.{js,vue}\"",
     "prettier:write": "npm run prettier -- --write",
@@ -83,6 +85,7 @@
     "css-loader": "^0.28.11",
     "cypress": "^3.4.1",
     "ejs": "^2.6.1",
+    "electron": "^6.0.10",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-config-prettier": "^3.1.0",
